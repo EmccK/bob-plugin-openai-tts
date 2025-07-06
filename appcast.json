@@ -4,8 +4,8 @@
         {
             "version": "1.0.2",
             "desc": "功能可用",
-            "sha256": "00744ca8b8d84713425b7fc2073ca498aa7633faac537a1c1fa80d1264d3fc03",
-            "url": "https://raw.githubusercontent.com/ripperhe/test/master/bobplugin/test_0.2.0.bobplugin",
+            "sha256": "1021591e1c297f887bfaff38ce13760a573c71e87dd893576d16a88e3eec7e54",
+            "url": "https://github.com/EmccK/bob-plugin-openai-tts/releases/download/v1.0.2/bob-plugin-openai-tts.bobplugin",
             "minBobVersion": "1.8.0",
             "timestamp": 1685108700989
         }
