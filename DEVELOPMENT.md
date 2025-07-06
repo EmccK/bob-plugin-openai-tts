@@ -75,13 +75,25 @@ mv appcast.json.backup appcast.json
 1. 访问 GitHub 仓库 > Settings > Actions > General
 2. 在 "Workflow permissions" 选择 "Read and write permissions"
 
+#### "detached HEAD" 错误
+如果遇到 "You are not currently on a branch" 错误：
+- 已使用 `stefanzweifel/git-auto-commit-action@v5` 解决
+- 这个 Action 专门处理 GitHub Actions 中的 git 提交问题
+- 无需手动处理分支切换
+
 #### appcast.json 更新失败
 1. 检查 jq 是否正确安装
 2. 验证 JSON 格式是否正确
-3. 确保 git 配置正确
+3. 确保工作流有写入权限
 
 #### 版本重复
 工作流会自动移除重复的版本条目，确保每个版本只出现一次。
+
+#### 提交失败
+如果 git 提交失败：
+1. 检查是否有实际的文件更改
+2. 确保 `git-auto-commit-action` 有正确的权限
+3. 查看 Actions 日志了解具体错误
 
 ## 文件结构
 

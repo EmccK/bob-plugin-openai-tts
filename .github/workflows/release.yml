@@ -155,16 +155,14 @@ jobs:
         echo "Updated appcast.json with version $VERSION_NUMBER"
 
     - name: Commit and push appcast.json
-      run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        git add appcast.json
-        if git diff --staged --quiet; then
-          echo "No changes to appcast.json"
-        else
-          git commit -m "Auto-update appcast.json for ${{ steps.get_version.outputs.VERSION }}"
-          git push
-        fi
+      uses: stefanzweifel/git-auto-commit-action@v5
+      with:
+        commit_message: "Auto-update appcast.json for ${{ steps.get_version.outputs.VERSION }}"
+        file_pattern: appcast.json
+        commit_user_name: GitHub Action
+        commit_user_email: action@github.com
+        commit_author: GitHub Action <action@github.com>
+        skip_dirty_check: false
 
     - name: Output release info
       run: |
