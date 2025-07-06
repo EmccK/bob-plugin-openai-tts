@@ -1,0 +1,13 @@
+{
+    "identifier": "com.emcck.bob.tts",
+    "versions": [
+        {
+            "version": "1.0.2",
+            "desc": "功能可用",
+            "sha256": "00744ca8b8d84713425b7fc2073ca498aa7633faac537a1c1fa80d1264d3fc03",
+            "url": "https://raw.githubusercontent.com/ripperhe/test/master/bobplugin/test_0.2.0.bobplugin",
+            "minBobVersion": "1.8.0",
+            "timestamp": 1685108700989
+        }
+    ]
+}

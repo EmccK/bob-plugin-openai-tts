@@ -1,13 +1,13 @@
 {
     "identifier": "com.emcck.bob.tts",
-    "version": "1.0.0",
+    "version": "1.0.2",
     "category": "tts",
     "name": "openai-tts",
     "summary": "支持OpenAI的语音合成的插件",
     "icon": "124",
     "author": "EmccK",
-    "homepage": "",
-    "appcast": "",
+    "homepage": "https://github.com/EmccK/bob-plugin-openai-tts",
+    "appcast": "https://github.com/EmccK/bob-plugin-openai-tts",
     "minBobVersion": "1.8.0",
     "options": [
         {
