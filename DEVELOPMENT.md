@@ -24,24 +24,31 @@ git push origin v1.x.x
 
 ### 自动化流程说明
 
-GitHub Actions 工作流会自动执行以下步骤：
+现在使用两个独立的 GitHub Actions 工作流：
 
+#### 主发布工作流 (release.yml)
 1. **检出代码**: 获取最新的代码
 2. **安装工具**: 安装 jq 用于 JSON 处理
 3. **获取版本**: 从 Git tag 或手动输入获取版本号
 4. **更新版本**: 自动更新 `info.json` 中的版本号
-5. **创建插件包**: 
+5. **创建插件包**:
    - 复制 `info.json` 和 `main.js` 到临时目录
    - 创建 ZIP 文件
    - 重命名为 `.bobplugin` 扩展名
 6. **生成 SHA256**: 计算文件的 SHA256 校验和
 7. **创建 Release**: 在 GitHub 上创建新的 Release
-8. **更新 appcast.json**: 自动更新 appcast.json 文件
+8. **上传文件**: 将 `.bobplugin` 文件上传到 Release
+
+#### appcast 更新工作流 (update-appcast.yml)
+在 Release 发布后自动触发：
+1. **检出代码**: 切换到默认分支
+2. **获取 Release 信息**: 从 GitHub API 获取发布信息
+3. **下载并验证**: 下载 .bobplugin 文件并计算真实的 SHA256
+4. **更新 appcast.json**:
    - 添加新版本信息到数组开头
    - 移除重复的版本条目
    - 包含版本号、描述、SHA256、下载URL、时间戳等信息
-9. **提交更改**: 将更新后的 appcast.json 提交到仓库
-10. **上传文件**: 将 `.bobplugin` 文件上传到 Release
+5. **提交更改**: 将更新后的 appcast.json 提交到仓库
 
 ### appcast.json 自动更新
 

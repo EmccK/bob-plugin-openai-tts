@@ -103,70 +103,10 @@ jobs:
         draft: false
         prerelease: false
 
-    - name: Update appcast.json
-      run: |
-        # 获取当前时间戳 (毫秒)
-        TIMESTAMP=$(date +%s)000
-
-        # 获取版本号 (去掉v前缀)
-        VERSION="${{ steps.get_version.outputs.VERSION }}"
-        VERSION_NUMBER="${VERSION#v}"
-
-        # 构建下载URL
-        DOWNLOAD_URL="https://github.com/${{ github.repository }}/releases/download/${{ steps.get_version.outputs.TAG_NAME }}/bob-plugin-openai-tts.bobplugin"
-
-        # 获取SHA256
-        SHA256="${{ steps.sha256.outputs.SHA256 }}"
-
-        # 创建新的版本条目JSON
-        NEW_VERSION_JSON=$(jq -n \
-          --arg version "$VERSION_NUMBER" \
-          --arg desc "版本 $VERSION_NUMBER 发布" \
-          --arg sha256 "$SHA256" \
-          --arg url "$DOWNLOAD_URL" \
-          --arg minBobVersion "1.8.0" \
-          --argjson timestamp "$TIMESTAMP" \
-          '{
-            version: $version,
-            desc: $desc,
-            sha256: $sha256,
-            url: $url,
-            minBobVersion: $minBobVersion,
-            timestamp: $timestamp
-          }')
-
-        # 更新appcast.json
-        if [ -f appcast.json ]; then
-          # 如果文件存在，添加新版本到开头，并移除重复版本
-          jq --argjson newVersion "$NEW_VERSION_JSON" \
-             --arg currentVersion "$VERSION_NUMBER" \
-             '.versions = [$newVersion] + (.versions | map(select(.version != $currentVersion)))' \
-             appcast.json > appcast_temp.json && mv appcast_temp.json appcast.json
-        else
-          # 如果文件不存在，创建新文件
-          jq -n \
-             --argjson newVersion "$NEW_VERSION_JSON" \
-             '{
-               identifier: "com.emcck.bob.tts",
-               versions: [$newVersion]
-             }' > appcast.json
-        fi
-
-        echo "Updated appcast.json with version $VERSION_NUMBER"
-
-    - name: Commit and push appcast.json
-      uses: stefanzweifel/git-auto-commit-action@v5
-      with:
-        commit_message: "Auto-update appcast.json for ${{ steps.get_version.outputs.VERSION }}"
-        file_pattern: appcast.json
-        commit_user_name: GitHub Action
-        commit_user_email: action@github.com
-        commit_author: GitHub Action <action@github.com>
-        skip_dirty_check: false
-
     - name: Output release info
       run: |
         echo "✅ Release created successfully!"
         echo "📦 Plugin file: bob-plugin-openai-tts.bobplugin"
         echo "🔗 Release URL: https://github.com/${{ github.repository }}/releases/tag/${{ steps.get_version.outputs.TAG_NAME }}"
         echo "🔐 SHA256: ${{ steps.sha256.outputs.SHA256 }}"
+        echo "📋 Note: appcast.json will be automatically updated by a separate workflow"
