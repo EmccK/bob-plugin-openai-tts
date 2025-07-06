@@ -1,0 +1,112 @@
+name: Build and Release Bob Plugin
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version tag (e.g., v1.0.0)'
+        required: true
+        default: 'v1.0.0'
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Get version
+      id: get_version
+      run: |
+        if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          echo "VERSION=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+          echo "TAG_NAME=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+        else
+          echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+          echo "TAG_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+        fi
+        
+    - name: Update version in info.json
+      run: |
+        VERSION="${{ steps.get_version.outputs.VERSION }}"
+        VERSION_NUMBER="${VERSION#v}"
+        sed -i "s/\"version\": \".*\"/\"version\": \"$VERSION_NUMBER\"/" info.json
+        
+    - name: Create plugin package
+      run: |
+        # 创建临时目录
+        mkdir -p temp_plugin
+        
+        # 复制必要文件到临时目录
+        cp info.json temp_plugin/
+        cp main.js temp_plugin/
+        
+        # 创建zip文件
+        cd temp_plugin
+        zip -r ../bob-plugin-openai-tts.zip .
+        cd ..
+        
+        # 重命名为.bobplugin扩展名
+        mv bob-plugin-openai-tts.zip bob-plugin-openai-tts.bobplugin
+        
+    - name: Generate SHA256
+      id: sha256
+      run: |
+        SHA256=$(sha256sum bob-plugin-openai-tts.bobplugin | cut -d' ' -f1)
+        echo "SHA256=$SHA256" >> $GITHUB_OUTPUT
+        echo "Plugin SHA256: $SHA256"
+        
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ steps.get_version.outputs.TAG_NAME }}
+        release_name: OpenAI TTS Plugin ${{ steps.get_version.outputs.VERSION }}
+        body: |
+          ## OpenAI TTS Plugin ${{ steps.get_version.outputs.VERSION }}
+          
+          ### 功能特性
+          - 支持 OpenAI TTS API
+          - 支持多种语音模型 (tts-1, tts-1-hd, gpt-4o-mini-tts)
+          - 支持多种预设声音和自定义声音
+          - 支持自定义模型
+          - 支持语音提示词 (prompt)
+          - 支持自定义 API Base URL
+          
+          ### 安装方法
+          1. 下载 `bob-plugin-openai-tts.bobplugin` 文件
+          2. 双击文件安装到 Bob
+          3. 在 Bob 设置中配置 OpenAI API Key
+          
+          ### 文件信息
+          - **文件名**: bob-plugin-openai-tts.bobplugin
+          - **SHA256**: ${{ steps.sha256.outputs.SHA256 }}
+          - **最低 Bob 版本**: 1.8.0
+          
+          ### 更新日志
+          请查看 commit 历史了解详细更改。
+        draft: false
+        prerelease: false
+        
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./bob-plugin-openai-tts.bobplugin
+        asset_name: bob-plugin-openai-tts.bobplugin
+        asset_content_type: application/zip
+        
+    - name: Output release info
+      run: |
+        echo "✅ Release created successfully!"
+        echo "📦 Plugin file: bob-plugin-openai-tts.bobplugin"
+        echo "🔗 Release URL: ${{ steps.create_release.outputs.html_url }}"
+        echo "🔐 SHA256: ${{ steps.sha256.outputs.SHA256 }}"

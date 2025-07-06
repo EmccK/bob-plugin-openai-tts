@@ -1,0 +1,145 @@
+{
+    "identifier": "com.emcck.bob.tts",
+    "version": "1.0.0",
+    "category": "tts",
+    "name": "openai-tts",
+    "summary": "支持OpenAI的语音合成的插件",
+    "icon": "124",
+    "author": "EmccK",
+    "homepage": "",
+    "appcast": "",
+    "minBobVersion": "1.8.0",
+    "options": [
+        {
+            "identifier": "apiKey",
+            "type": "text",
+            "title": "API Key",
+            "defaultValue": "",
+            "desc": "需要填写 API Key 才可以使用",
+            "textConfig": {
+                "type": "secure",
+                "height": "40",
+                "placeholderText": "sk-xxxx"
+            }
+        },
+        {
+            "identifier": "apiUrl",
+            "type": "text",
+            "title": "自定义的API Base URL",
+            "defaultValue": "https://api.openai.com",
+            "desc": "API地址，如果访问不了OpenAI,可以使用自己的API地址",
+            "textConfig": {
+                "type": "visible",
+                "placeholderText": "请填写API地址"
+            }
+        },
+        {
+            "identifier": "model",
+            "type": "menu",
+            "title": "Tts模型",
+            "defaultValue": "gpt-4o-mini-tts",
+            "desc": "选择使用的模型",
+            "menuValues": [
+                {
+                    "title": "gpt-4o-mini-tts",
+                    "value": "gpt-4o-mini-tts"
+                },
+                {
+                    "title": "tts-1",
+                    "value": "tts-1"
+                },
+                {
+                    "title": "tts-1-hd",
+                    "value": "tts-1-hd"
+                }
+            ]
+        },
+        {
+            "identifier": "customModel",
+            "type": "text",
+            "title": "自定义Tts模型",
+            "defaultValue": "",
+            "desc": "自定义模型，需要填写模型的名称",
+            "textConfig": {
+                "type": "visible",
+                "placeholderText": "e.g. gpt-4o-mini-tts"
+            }
+        },
+        {
+            "identifier": "voice",
+            "type": "menu",
+            "title": "Tts声音",
+            "defaultValue": "alloy",
+            "desc": "选择使用的Tts声音",
+            "menuValues": [
+                {
+                    "title": "alloy",
+                    "value": "alloy"
+                },
+                {
+                    "title": "ash",
+                    "value": "ash"
+                },
+                {
+                    "title": "ballad",
+                    "value": "ballad"
+                },
+                {
+                    "title": "coral",
+                    "value": "coral"
+                },
+                {
+                    "title": "echo",
+                    "value": "echo"
+                },
+                {
+                    "title": "fable",
+                    "value": "fable"
+                },
+                {
+                    "title": "onyx",
+                    "value": "onyx"
+                },
+                {
+                    "title": "nova",
+                    "value": "nova"
+                },
+                {
+                    "title": "sage",
+                    "value": "sage"
+                },
+                {
+                    "title": "shimmer",
+                    "value": "shimmer"
+                },
+                {
+                    "title": "verse",
+                    "value": "verse"
+                }
+            ]
+        },
+        {
+            "identifier": "customVoice",
+            "type": "text",
+            "title": "自定义Tts声音",
+            "defaultValue": "",
+            "desc": "自定义声音，需要填写声音的名称",
+            "textConfig": {
+                "type": "visible",
+                "placeholderText": "e.g. alloy"
+            }
+        },
+        {
+            "identifier": "prompt",
+            "type": "text",
+            "title": "语音提示词",
+            "defaultValue": "",
+            "desc": "可选的语音提示词，用于指导语音生成的风格和语调",
+            "textConfig": {
+                "type": "visible",
+                "height": "80",
+                "placeholderText": "例如：请用温和友善的语调朗读"
+            }
+        }
+    ]
+}
